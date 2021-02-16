@@ -1,0 +1,95 @@
+{% include 'global.twig' %}
+
+var id = "#{{ field("id") }}",
+    globalIcon = {{ field("global_icon") | json_encode() }},
+    accordionSelector = id + " .qx-accordion",
+    accordionItemSelector = id + " .qx-element-accordion-item",
+
+    iconSelector = id + " .qx-accordion_icon",
+    activeIconSelector = id + " li.qx-open .qx-accordion_icon",
+    accordionIconRightSelector = id + " .qx-icon-alignment-right .qx-accordion-title",
+
+    titleSelectorWrapper = id + " .qx-accordion-title" ,
+    titleWrapper = id + " .wrap-accordion-title *" ,
+    activeTitleSelectorWrapper = id + " .qx-open .qx-accordion-title",
+    activeTitleWrapper = id + " .qx-open .wrap-accordion-title *",
+
+    contentSelector  = id + " .qx-accordion-content"
+
+{# accordion #}
+style.css(accordionSelector, 'margin', '0px !important' );
+style.css(accordionItemSelector, 'border', 'solid 1px #eee' );
+style.css(accordionItemSelector, 'overflow', 'hidden' );
+style.border(accordionItemSelector, {{ field("accordion_border") | json_encode() }} );
+style.margin(accordionItemSelector, {{ field('accordion_item_margin') | json_encode() }});
+
+// tab icon
+{% set fieldsGroup = field('accordion_fg_element_mode') %}
+{% if fieldsGroup %}
+    {% for index, fields in fieldsGroup %}
+        {% set data = fieldsGroup(fieldsGroup, index) %}
+        var icon = {{  data.icon.value | json_encode() }};
+        if(icon.media){
+            if (icon.media.type == "svg"){
+                var iconSelectorItem = "#{{ field("id") }} li.item{{ index }}";
+                var size = {{ prepareSvgSizeValue(data.icon.value.media.properties.size)|json_encode() }};
+
+                style.css( iconSelectorItem + " path", "fill", icon.media.properties.color )
+                style.css( iconSelectorItem + " svg", 'width', size.value +  size.unit)
+                style.css( iconSelectorItem + " svg", 'height', size.value +  size.unit)
+
+                style.css( iconSelectorItem + " i", 'color', icon.media.properties.color)
+                style.css( iconSelectorItem + " i", 'font-size', size.value +  size.unit)
+            }
+        }
+    {% endfor %}
+{% endif %}
+
+{# title #}
+style.css(titleSelectorWrapper + ' *', 'margin-bottom', '0px')
+style.css(titleSelectorWrapper + ' *', 'margin-top', '0px')
+style.css(titleSelectorWrapper, 'display', 'flex')
+style.css(titleSelectorWrapper, 'align-items', 'center')
+style.css(accordionIconRightSelector, 'flex-direction', 'row-reverse')
+style.css(accordionIconRightSelector, 'justify-content', 'space-between')
+style.css(titleSelectorWrapper, 'width', '100%')
+style.css(titleSelectorWrapper, 'color', {{ field("title_color") | json_encode() }})
+style.css(titleWrapper, 'color', {{ field("title_color") | json_encode() }})
+style.css(titleSelectorWrapper, 'background-color', {{ field("title_bg_color") | json_encode() }})
+style.css(activeTitleSelectorWrapper, 'color', {{ field("title_active_color") | json_encode() }})
+style.css(activeTitleWrapper, 'color', {{ field("title_active_color") | json_encode() }})
+style.css(activeTitleSelectorWrapper, 'background-color', {{ field("title_active_bg_color") | json_encode() }})
+
+style.padding(titleSelectorWrapper, {{ field('title_padding') | json_encode() }})
+style.typography( titleSelectorWrapper + ' *', {{ field('title_font') | json_encode() }});
+
+{# content #}
+style.css(contentSelector, 'margin-top', '0px')
+style.css(contentSelector, 'color', {{ field("content_color") | json_encode() }})
+style.css(contentSelector, 'background-color', {{ field("content_bg_color") | json_encode() }})
+style.padding(contentSelector, {{ field('content_padding') | json_encode() }})
+style.typography( contentSelector + ' *', {{ field('content_font') | json_encode() }});
+
+{# icon #}
+style.responsiveCss(iconSelector, {{ field("icon_spacing") | json_encode() }}, 'margin-right', {{ field("icon_spacing").unit | json_encode() }});
+
+style.css(activeIconSelector + ' path', 'fill', {{ field('icon_active_color') | json_encode() }})
+style.css(activeIconSelector + ' i', 'color', {{ field('icon_active_color') | json_encode() }})
+
+if( globalIcon.media ) {
+  if( globalIcon.media.type == "svg" ) {
+    var size = {{ prepareSvgSizeValue(field("global_icon").media.properties.size)|json_encode() }};
+
+    style.css( iconSelector + " path", "fill", globalIcon.media.properties.color )
+    style.css( iconSelector + " svg", 'width', size.value +  size.unit)
+    style.css( iconSelector + " svg", 'height', size.value +  size.unit)
+
+    style.css( iconSelector + " i", 'color', globalIcon.media.properties.color)
+    style.css( iconSelector + " i", 'font-size', size.value +  size.unit)
+  }
+}
+style.css(iconSelector, 'display', 'flex')
+
+{% if renderer %}
+    style.load(id);
+{% endif %}

@@ -1,0 +1,51 @@
+{% set id = field("id") %}
+{% set class = field('class') %}
+
+{% set link_type = field('link_type') %}
+{# Youtube options #}
+{% set youtube_id = field('youtube_link') %}
+{# {% set autoplay = field('autoplay') %} #}
+{# {% set related_video = field('related_video') %} #}
+{# {% set player_control = field('player_control') %} #}
+{# {% set title_actions = field('title_actions') %} #}
+{# {% set mute = field('mute') %} #}
+{# {% set privacy_mode = field('privacy_mode') %} #}
+{# Vimeo options #}
+{% set vimeo_id = field('vimeo_link') %}
+{# {% set autoplay_vimeo = field('autoplay_vimeo') %} #}
+{# {% set loop_vimeo = field('loop_vimeo') %} #}
+{# {% set intro_title_vimeo = field('intro_title_vimeo') %} #}
+{# {% set intro_portrait_vimeo = field('intro_portrait_vimeo') %} #}
+{# {% set intro_byline_vimeo = field('intro_byline_vimeo') %} #}
+{# {% set link_iframe = field('link_iframe') %} #}
+
+{# video options #}
+{% set src = field('custom_video') %}
+{% set videoPoster = field('video_poster') %}
+{% set videoId = "video-" ~ field('id') %}
+
+{% set classes = classNames('qx-element qx-element-video-v2', visibilityClass(node.visibility), class) %}
+{% set animation = field("animation") %}
+{% set animationRepeat = field("animation_repeat") %}
+{% set animationDelay = field('animation_delay').value %}
+{% set background = field('background') %}
+    
+{% embed "animation.twig" with {
+    "id" : id,
+    "classes" : classes,
+    "animation" : animation,
+    "animationRepeat" : animationRepeat,
+    "animationDelay" : animationDelay,
+    "background" : background
+} %}
+    {% block element %}
+        {# Youtube iframe #}
+        {% if link_type == 'youtube' or link_type == 'vimeo' %}
+            <div id="video-{{ id }}" data-plyr-provider="{{ link_type }}" data-plyr-embed-id="{{ link_type == 'youtube' ? youtube_id : vimeo_id }}">Loading...</div>
+        {% elseif link_type == 'custom' and src.media.type == "video" %} 
+            {{ video( videoId, src.media.video, videoPoster.media.image ) }}
+        {% else %}
+            <p class="qx-alert qx-alert-warning qx-m-0">Please select video first!</p>
+        {% endif %}
+    {% endblock %}
+{% endembed %}

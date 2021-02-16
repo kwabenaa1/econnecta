@@ -1,0 +1,59 @@
+{% set dataAll = allfield() %}
+
+{% set id = field("id") %}
+{% set class = field("class") %}
+{% set fieldsGroup = field('icon_list') %}
+{% set classes = classNames('qx-element qx-element-icon-list', visibilityClass(node.visibility), class) %}
+{% set layout = field("layout") %}
+{% set icon = field("common_icon") %}
+
+
+{# Start Animation #}
+{% set animation = field("animation") %}
+{% set animationRepeat = field("animation_repeat") %}
+{% set animationDelay = field('animation_delay').value %}
+{% set background = field('background') %}
+    
+{% embed "animation.twig" with {
+    "id" : id,
+    "classes" : classes,
+    "animation" : animation,
+    "animationRepeat" : animationRepeat,
+    "animationDelay" : animationDelay,
+    "background" : background
+} %}
+    {% block element %}
+        <div class="{{ id }}-wrapper">
+            {% if fieldsGroup %}
+            <ul class="qx-list-unstyled {{ layout == 'vr' ? 'qx-list' : 'qx-inline' }}">
+                {% for index, fields in fieldsGroup %}
+                <li class="item-{{index}} {{ layout == 'hr' ? 'inline-item' : '' }}">
+                    {% set data = fieldsGroup(fieldsGroup, index ) %}
+
+                    {% set src = data.icon.value %}
+                    {% set link = data.link.value %}
+                    {% set alt_text = '' %}
+
+                    
+                    {% if src.media %}
+                        {% if src.media.type == "svg" %}
+                            {{ loadSvg(src.media.svg) | raw }}
+                        {% endif %}
+                    {% elseif icon.media %}
+                        {% if icon.media.type == "svg" %}
+                            {{ loadSvg(icon.media.svg) | raw }}
+                        {% endif %}
+                    {% else %}
+                        <i class="qxio-star"></i>
+                    {% endif %}
+                    
+                    <span class="qx-icon-text">
+                      {{ data.title.value | link(link) }}
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    {% endblock %}
+{% endembed %}

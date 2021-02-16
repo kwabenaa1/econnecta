@@ -1,0 +1,63 @@
+{% set id = field('id') %}
+{% set class = field('class') %}
+{% set src = field('icon') %}
+{% set text = field('text') %}
+{% set link = field('link') %}
+{% set type = field('type') %}
+{% set icon_alignment = field('icon_alignment') %}
+{% set outline = field('outline') %}
+{% set btnClass = 'qx-btn qx-btn-' ~ type %}
+{% set icon = '' %}
+{% set text = field('text') | raw %}
+
+{% set enableSS = field('enable_smoothscroll')|default(false) %}
+{% set scroll_offset = field('scroll_offset') %}
+{% set SSTags = "" %}
+{% if enableSS %}
+    {% if scroll_offset != "" %}
+        {% set SSTags = ' data-qx-scroll="offset:' ~ scroll_offset ~ ' "' %}
+    {% else %}
+        {% set SSTags = ' data-qx-scroll ' %}
+    {% endif %}
+{% endif %}
+{% set textAlignment = field('text_alignment') %}
+
+{% set classes = classNames('qx-element qx-element-button-v2', visibilityClass(node.visibility), class) %}
+{% set animation = field("animation") %}
+{% set animationRepeat = field("animation_repeat") %}
+{% set animationDelay = field('animation_delay').value %}
+{% set background = field('background') %}
+    
+{% embed "animation.twig" with {
+    "id" : id,
+    "classes" : classes,
+    "animation" : animation,
+    "animationRepeat" : animationRepeat,
+    "animationDelay" : animationDelay,
+    "background" : background
+} %}
+    {% block element %}
+        {% if outline %}
+          {% set btnClass = 'qx-btn qx-btn-outline-' ~ type %}
+        {% endif %}
+        
+        {% if field('full_width') %}
+            {% set btnClass = btnClass ~ ' qx-btn-block' %}
+        {% endif %}
+        
+        {% if src.media %}
+            {% if src.media.type == "svg" %}
+                {% set icon = loadSvg(src.media.svg)|raw %}
+            {% endif %}
+        {% elseif src.url %}
+            {% set icon = image(src.url, alt_text) %}
+        {% endif %}
+
+        {% if icon_alignment.value == 'left' %}
+            {{ ( '<div class="qx-element-button-wrapper qx-justify-content-' ~ textAlignment.value ~ '">' ~ icon ~ ' ' ~ '<span>' ~ text ~ '</span></div>') | link(link, btnClass, SSTags) }}
+        {% else %}
+            {{ ('<div class="qx-element-button-wrapper qx-justify-content-' ~ textAlignment.value ~ '">' ~ '<span>' ~ text ~ '</span>' ~ ' ' ~ icon ~ '</div>') | link(link, btnClass, SSTags) }}
+        {% endif %}
+
+    {% endblock %}
+{% endembed %}

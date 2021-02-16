@@ -1,0 +1,36 @@
+{% include 'global.twig' %}
+
+var id = "#{{ field("id") }}",
+    img = {{ field("image") | json_encode() }},
+    seperator = id + " .qx-divider-separator";
+
+// Border 
+style.css( seperator, 'border-top-style', {{ field('style') | json_encode() }});
+style.css( seperator, 'border-top-width', {{ field('weight').value }} + 'px');
+style.css( seperator, 'border-color', {{ field('color') | json_encode() }});
+style.css( seperator, 'display', 'inline-block');
+
+style.responsiveCss(seperator, {{ field('width') | json_encode() }}, 'width', '%')
+
+// Gap 
+style.responsiveCss(id, {{ field('gap') | json_encode() }}, 'padding-top', 'px')
+style.responsiveCss(id, {{ field('gap') | json_encode() }}, 'padding-bottom', 'px')
+
+// Alignment
+style.alignment(id, {{ field('alignment') | json_encode() }});
+
+// svg
+if( img.media ) {
+  if( img.media.type == "svg" ) {
+    style.css( id + " path", "fill", img.media.properties.color )
+    style.css( id + " svg", 'width', img.media.properties.size.value +  img.media.properties.size.unit)
+    style.css( id + " svg", 'height', img.media.properties.size.value +  img.media.properties.size.unit)
+  	
+  	style.css( id + " i", 'color', img.media.properties.color)
+    style.css( id + " i", 'font-size', img.media.properties.size.value +  img.media.properties.size.unit)
+  }
+}
+
+{% if renderer %}
+    style.load(id);
+{% endif %}

@@ -1,0 +1,89 @@
+{% include 'global.twig' %}
+
+var id = "#{{ field("id") }}",
+    img = {{ field("image") | json_encode() }},
+    img_alignment = {{ field("image_alignment").value | json_encode() }},
+    wrapperSelector = id + " .qx-element-blurb__wrapper",
+    imgSelector = id + " .qx-element-blurb__media",
+    contentSelector = id + " .qx-element-blurb__content",
+    titleSelector = id + " .qx-element-blurb__title",
+    bodySelector = id + " .qx-element-blurb__body";
+
+// -----------------------------
+// Media 
+// -----------------------------
+var imageSpacing = {{ prepareResponsiveValue(field("image_spacing"))|json_encode() }};
+
+if( img_alignment == 'left'){
+  
+  style.responsiveCss(imgSelector, imageSpacing, 'margin-right', imageSpacing.unit);
+  style.phone(imgSelector, 'margin-bottom:' + {{ field("image_spacing").phone | json_encode() }} + imageSpacing.unit);
+
+} else if( img_alignment == 'right'){
+  
+  style.responsiveCss(imgSelector, imageSpacing, 'margin-left', imageSpacing.unit);
+  style.phone(imgSelector, 'margin-bottom:' + {{ field("image_spacing").phone | json_encode() }} + imageSpacing.unit);
+
+} else{
+  style.responsiveCss(imgSelector, imageSpacing, 'margin-bottom', imageSpacing.unit);
+}
+// svg
+if( img.media ) {
+  if( img.media.type == "svg" ) {
+    var size = {{ prepareSvgSizeValue(field("image").media.properties.size)|json_encode() }};
+    
+    style.css( imgSelector + " path", "fill", img.media.properties.color )
+    style.css( imgSelector + " svg", 'width', size.value +  size.unit)
+    style.css( imgSelector + " svg", 'height', size.value +  size.unit)
+    
+    style.css( imgSelector + " i", 'color', img.media.properties.color)
+    style.css( imgSelector + " i", 'font-size', size.value +  size.unit)
+  }
+}
+
+// Width 
+var imgWidth = {{ prepareWidthValue(field("image_width"))|json_encode() }};
+style.width(imgSelector, imgWidth);
+style.border(imgSelector + " img", {{ field("image_border") | json_encode() }});
+style.border(imgSelector + " i", {{ field("image_border") | json_encode() }});
+style.background(imgSelector + " i", {{ field("image_bg") | json_encode() }});
+style.background(imgSelector + " img", {{ field("image_bg") | json_encode() }});
+style.padding(imgSelector + " i", {{ field("image_padding") | json_encode() }});
+style.padding(imgSelector + " img", {{ field("image_padding") | json_encode() }});
+style.css(imgSelector + " svg," + imgSelector + " i", "display", "block");
+
+// -----------------------------
+// Title
+// -----------------------------
+// Spacing 
+var titleSpacing = {{ prepareResponsiveValue(field("title_spacing"))|json_encode() }};
+
+style.responsiveCss(titleSelector, titleSpacing, 'margin-bottom', "{{ field("title_spacing").unit|default('px')}}");
+// Color
+style.css( titleSelector + ' *', 'color', {{ field('title_color') | json_encode() }});
+// Title Hover Color
+style.css( titleSelector + ' *:hover', 'color', {{ field('title_hover_color') | json_encode() }});
+// Typography
+style.typography( titleSelector + ' *', {{ field('title_font') | json_encode() }});
+
+
+// -----------------------------
+// Body
+// -----------------------------
+// Color
+style.css( bodySelector + ',' + bodySelector + ' *', 'color', {{ field('body_color') | json_encode() }});
+// Typography - Multiple selectors
+style.typography( bodySelector + ',' + bodySelector + ' *', {{ field('body_font') | json_encode() }});
+
+
+// -----------------------------
+// Content
+// -----------------------------
+// Alignment
+style.alignment(wrapperSelector, {{ field('content_alignment') | json_encode() }});
+// Padding
+style.padding(contentSelector, {{ field('content_padding') | json_encode() }})
+
+{% if renderer %}
+    style.load(id);
+{% endif %}

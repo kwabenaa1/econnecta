@@ -1,0 +1,42 @@
+{% set id = field("id") %}
+{% set class = field('class') %}
+
+{% set src = field('image') %}
+{% set alt_text = field('alt_text') %}
+{% set link = field('link') %}
+{% set caption = field('caption') %}
+
+{% set responsiveClass = '' %}
+{% if field('img_responsive') %}
+  {% set responsiveClass = 'qx-img-fluid' %}
+{% endif %}
+
+{% set classes = classNames('qx-element qx-element-image-v2', visibilityClass(node.visibility), class) %}
+{% set animation = field("animation") %}
+{% set animationRepeat = field("animation_repeat") %}
+{% set animationDelay = field('animation_delay').value %}
+{% set background = field('background') %}
+  
+{% embed "animation.twig" with {
+    "id" : id,
+    "classes" : classes,
+    "animation" : animation,
+    "animationRepeat" : animationRepeat,
+    "animationDelay" : animationDelay,
+    "background" : background
+} %}
+    {% block element %}
+      {% if src.media %}
+        {% if src.media.type == "svg" %}
+          {{ loadSvg(src.media.svg) | raw | link(link)}}
+        {% else %}
+          {{ image( src.media.image, alt_text, responsiveClass) | link(link) }}
+        {% endif %}  
+      {% elseif src.url %}
+        {{ image(src.url, alt_text, responsiveClass) | link(link) }}
+      {% endif %}
+      {% if caption %}
+      <figcaption class="qx-figure-caption">{{ caption }}</figcaption>
+      {% endif %}
+  {% endblock %}
+{% endembed %}

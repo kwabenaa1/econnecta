@@ -1,0 +1,71 @@
+{% include 'global.twig' %}
+
+var id = "#{{ field("id") }}",
+	img = {{ field("icon") | json_encode() }},
+  img_alignment = {{ field("icon_alignment").value | json_encode() }},
+	imgSelector = id + ' a svg,' + id + ' a i';
+
+// Background > .qx-btn 
+style.background (id + ' .qx-btn', {{ field("btn_background") | json_encode() }})
+
+// Text Color
+style.css( id + ' .qx-btn', 'color', {{ field('text_color') | json_encode() }});
+// Hover Text color
+style.css( id + ' .qx-btn:hover', 'color', {{ field('hover_text_color') | json_encode() }});
+style.css( id + ' .qx-btn:hover i', 'color', {{ field('hover_icon_color') | json_encode() }});
+
+// typography
+style.typography(id + ' *', {{ field('font') | json_encode() }});
+
+// Alignment
+style.alignment(id, {{ field('alignment') | json_encode() }});
+style.alignment(id, {{ field('nalignment') | json_encode() }});
+
+// padding 
+style.padding(id + ' .qx-btn', {{ field("btn_padding") | json_encode() }})
+
+// svg
+if( img.media ) {
+  if( img.media.type == "svg" ) {
+    var size = {{ prepareSvgSizeValue(field("icon").media.properties.size)|json_encode() }};
+
+    style.css( imgSelector + " path", "fill", img.media.properties.color )
+    style.css( imgSelector, 'width', size.value +  size.unit)
+    style.css( imgSelector, 'height', size.value +  size.unit)
+    
+    style.css( imgSelector, 'color', img.media.properties.color)
+    style.css( imgSelector, 'font-size', size.value +  size.unit)
+  }
+}
+
+{# Spacing #}
+var imageSpacing = {{ prepareResponsiveValue(field("icon_spacing"))|json_encode() }};
+if( img_alignment == 'left'){
+  style.responsiveCss(imgSelector, imageSpacing, 'margin-right', imageSpacing.unit);
+} else if( img_alignment == 'right'){
+  style.responsiveCss(imgSelector, imageSpacing, 'margin-left', imageSpacing.unit);
+}
+
+
+// -----------------------------
+// Border 
+// -----------------------------
+
+{% if field("use_new_border") %}
+  style.border(id + " .qx-btn", {{field("btn_border") | json_encode() }});
+{% else %}
+  style.borderWidth( id + ' .qx-btn', {{ field('btn_border_width') | json_encode() }} );
+  style.css( id + ' .qx-btn', 'border-style', {{ field('btn_border_type') | json_encode() }} );
+  style.css( id + ' .qx-btn', 'border-color', {{ field('btn_border_color') | json_encode() }} );
+  style.css( id + ' .qx-btn:hover', 'border-color', {{ field('btn_hover_border_color') | json_encode() }} );
+  style.borderRadius( id + ' .qx-btn', {{ field('btn_border_radius') | json_encode() }} );
+{% endif %}
+
+
+// -----------------------------
+// Border 
+// -----------------------------
+
+{% if renderer %}
+    style.load(id);
+{% endif %}

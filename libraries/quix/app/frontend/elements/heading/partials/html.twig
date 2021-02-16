@@ -1,0 +1,24 @@
+{% set id = field('id') %}
+{% set class = field('class') %}
+
+{% set tag = field('html_tag') %}
+{% set link = field('link') %}
+
+{% set classes = classNames('qx-element qx-element-heading-v2', visibilityClass(node.visibility), class) %}
+{% set animation = field("animation") %}
+{% set animationRepeat = field("animation_repeat") %}
+{% set animationDelay = field('animation_delay').value %}
+{% set background = field('background') %}
+	
+{% embed "animation.twig" with {
+    "id" : id,
+    "classes" : classes,
+    "animation" : animation,
+    "animationRepeat" : animationRepeat,
+    "animationDelay" : animationDelay,
+    "background" : background
+} %}
+    {% block element %}
+        {{ (field('title')|raw|wrap('span')) | wrap(tag) | link(link) }}
+    {% endblock %}
+{% endembed %}

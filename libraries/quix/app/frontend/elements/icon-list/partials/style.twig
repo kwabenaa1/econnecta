@@ -1,0 +1,94 @@
+{% include 'global.twig' %}
+
+var id = "#{{ field("id") }}",
+    layoutItem = id + ' ul li',
+    nameSelector = id + ' ul li span.qx-icon-text',
+    inlineLayout = id + ' ul.qx-inline ',
+    inlineSpace = id + ' ul.qx-inline li';
+    listLayout = id + ' ul.qx-list ',
+    listSpace = id + ' ul.qx-list li',
+    iconHoverColor = id + ' ul li i svg path';
+    iconHoverColorFont = id + ' ul li i';
+
+{% set icon = field("common_icon") %}
+
+{% if icon.media.type == "svg" %}
+    style.css( id + " li i", 'color', "{{ icon.media.properties.color }}")
+    style.css( id + " li i", 'font-size', "{{ icon.media.properties.size.value }}{{ icon.media.properties.size.unit }}")
+{% endif %}
+{% set fieldsGroup = field('icon_list') %}
+{% if fieldsGroup %}
+    {% for index, fields in fieldsGroup %}
+        {% set data = fieldsGroup(fieldsGroup, index) %}
+        {% set src = data.icon.value %}
+
+        {% if src.media.type == "svg" %}
+            style.desktop( id + " li.item-{{index}} svg path", "fill: {{ src.media.properties.color }}" )
+            style.desktop( id + " li.item-{{index}} i", "height: {{ src.media.properties.size.value }}{{ src.media.properties.size.unit }};")
+            style.desktop( id + " li.item-{{index}} i", "width: {{ src.media.properties.size.value }}{{ src.media.properties.size.unit }};")
+            style.desktop( id + " li.item-{{index}} svg", "height: {{ src.media.properties.size.value }}{{ src.media.properties.size.unit }};")
+            style.desktop( id + " li.item-{{index}} svg", "width: {{ src.media.properties.size.value }}{{ src.media.properties.size.unit }};")
+
+            style.css( id + " li.item-{{index}} i", 'color', "{{ src.media.properties.color }}")
+            style.css( id + " li.item-{{index}} i", 'font-size', "{{ src.media.properties.size.value }}{{ src.media.properties.size.unit }}")
+        {% endif %}
+
+    {% endfor %}
+{% endif %}
+
+style.desktop( ".qx-element-icon-list svg", "height: 30px;")
+style.desktop( ".qx-element-icon-list svg", "width: 30px;")
+
+// -----------------------------
+// Alignment 
+// -----------------------------
+var itemAlignment = {{ field("alignment") | json_encode() }}
+
+if (itemAlignment.value == 'left') style.css(listSpace, 'justify-content', 'flex-start');
+if (itemAlignment.value == 'center') style.css(listSpace, 'justify-content', 'center');
+if (itemAlignment.value == 'right') style.css(listSpace, 'justify-content', 'flex-end');
+
+if (itemAlignment.value == 'left') style.css(inlineLayout, 'justify-content', 'flex-start');
+if (itemAlignment.value == 'center') style.css(inlineLayout, 'justify-content', 'center');
+if (itemAlignment.value == 'right') style.css(inlineLayout, 'justify-content', 'flex-end');
+
+// Typography
+style.typography(nameSelector, {{ field('text_font') | json_encode() }});
+
+// Layout Control
+style.css( inlineLayout + ',' + layoutItem, 'display', 'flex' );
+style.css( nameSelector, 'align-self', 'center' );
+
+// Color
+style.css( iconHoverColor + ':hover', 'fill', {{ field('icon_hover') | json_encode() }});
+style.css( iconHoverColorFont + ':hover', 'color', {{ field('icon_hover') | json_encode() }});
+style.css( nameSelector + ',' + nameSelector + ' a', 'color', {{ field('text_color') | json_encode() }});
+style.css( nameSelector + ':hover' + ',' + nameSelector + ' a:hover', 'color', {{ field('text_hover') | json_encode() }});
+
+// Spacing
+style.css( inlineLayout, 'margin-left', '8px' );
+style.css( inlineLayout, 'margin-right', '8px' );
+style.css( inlineLayout + ',' + listLayout, 'margin-left', '0' );
+style.css( inlineLayout + ',' + listLayout, 'margin-bottom', '0' );
+
+style.responsiveCss(listSpace, {{ field("item_spacing") | json_encode() }}, 'margin-bottom', {{ field("item_spacing").unit | json_encode() }});
+style.css( listSpace + ':last-child', 'margin-bottom', '0px' );
+
+style.responsiveCss(inlineSpace, {{ field("item_spacing") | json_encode() }}, 'margin-right', {{ field("item_spacing").unit | json_encode() }});
+style.css( inlineSpace + ':last-child', 'margin-right', '0px' );
+
+style.responsiveCss(nameSelector, {{ field("text_indent") | json_encode() }}, 'padding-left', {{ field("text_indent").unit | json_encode() }});
+
+style.padding( layoutItem, {{ field('item_padding') | json_encode() }});
+
+// Border
+
+style.borderWidth( layoutItem, {{ field('icon_border_width') | json_encode() }} );
+style.css( layoutItem, 'border-style', {{ field('icon_border_type') | json_encode() }} );
+style.css( layoutItem, 'border-color', {{ field('icon_border_color') | json_encode() }} );
+style.borderRadius( layoutItem, {{ field('icon_border_radius') | json_encode() }} );
+
+
+{% if renderer %}
+    style.load(id);
+{% endif %}

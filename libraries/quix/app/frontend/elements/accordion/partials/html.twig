@@ -1,0 +1,122 @@
+{% set id = field("id") %}
+{% set class = field("id") %}
+{% set element_mode = field('element_mode') %}
+{# accordion content #}
+{% set accordion_group = field('accordion_fg_element_mode') %}
+{# {% set tag = field('title_html_tag') %} #}
+{# icon #}
+{% set global_icon = field('global_icon') %}
+{% set icon_alignment = field('icon_alignment') %}
+{# button #}
+{% set button = field('button') %}
+{% set link = field('link') %}
+{% set btn_class = 'qx-btn qx-btn-' ~ field('button_type') %}
+{# Wrapper Class #}
+{% set wrapperClassesForAccordion = classNames('qx-element-call-to-action__wrapper') %}
+{# Content Class  #}
+{% set iconPosition = classNames(
+  icon_alignment.value == 'right'  ? 'qx-icon-alignment-' ~ icon_alignment.value : ''
+) %}
+{# Close First #}
+{% set close_first = field('close_first') %}
+{% set faqpage = field('faqpage') %}
+
+{% set animation = field("animation") %}
+{% set animationRepeat = field("animation_repeat") %}
+{% set animationDelay = field('animation_delay').value %}
+{% set background = field('background') %}
+
+{% set classes = classNames('qx-element qx-element-accordion-v2', visibilityClass(node.visibility), class) %}
+
+{% embed "animation.twig" with {
+    "id" : id,
+    "classes" : classes,
+    "animation" : animation,
+    "animationRepeat" : animationRepeat,
+    "animationDelay" : animationDelay,
+    "background" : background
+} %}
+  {% block element %}
+    <div class="{{ wrapperClassesForAccordion }}">
+      {% if accordion_group %}
+        {% set schemaItems = "" %}
+        <ul qx-accordion="multiple: {{ field('multiple')|default('false') }};collapsible:{{ field('collapsible')|default('false') }}" class="qx-accordion">
+          {% set a = 0 %}
+          {% for index, fields in accordion_group %}
+            {% set data = fieldsGroup(accordion_group, index) %}
+            {% set icon = data.icon.value %}
+
+            {# schema #}
+            {% if index != 0 %}
+              {% set schemaItems =  schemaItems ~ "," %}
+            {% endif %}
+            
+            {% set schemaItems =  schemaItems ~ '{
+              "@type": "Question",
+              "name": "' ~ data.title.value ~ '",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "' ~ data.description.value | striptags ~ '"
+              }
+            }' %}
+
+            {% if (index == 0) %}
+            <li class="{{close_first ? '' : 'qx-open' }} qx-element-accordion-item {{ iconPosition ~ ' item' ~ index }}">
+              <a class="qx-accordion-title" href="#">
+                {% if icon.media %}
+                  <span class="qx-accordion_icon">
+                      {% if icon.media.type == "svg" %}
+                          {{ loadSvg(icon.media.svg) | raw }}
+                      {% endif %}
+                  </span>
+                {% elseif global_icon.media %}
+                  <span class="qx-accordion_icon">
+                      {% if global_icon.media.type == "svg" %}
+                          {{ loadSvg(global_icon.media.svg) | raw }}
+                      {% endif %}
+                  </span>
+                {% endif %}
+                <span class="wrap-accordion-title">{{ data.title.value }}</span>
+              </a>
+              <div class="qx-accordion-content" aria-hidden="false">
+                <p>{{ data.description.value|raw }}</p>
+              </div>
+            </li>
+            {% else %}
+            <li class="qx-element-accordion-item {{iconPosition ~ ' item' ~ index }}">
+              <a class="qx-accordion-title" href="#">
+                {% if icon.media %}
+                  <span class="qx-accordion_icon">
+                      {% if icon.media.type == "svg" %}
+                          {{ loadSvg(icon.media.svg) | raw }}
+                      {% endif %}
+                  </span>
+                {% elseif global_icon.media %}
+                  <span class="qx-accordion_icon">
+                      {% if global_icon.media.type == "svg" %}
+                          {{ loadSvg(global_icon.media.svg) | raw }}
+                      {% endif %}
+                  </span>
+                {% endif %}
+                <span class="wrap-accordion-title">{{ data.title.value }}</span>
+              </a>
+              <div class="qx-accordion-content" hidden aria-hidden="true">
+                <p>{{ data.description.value|raw }}</p>
+              </div>
+            </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+      {% if faqpage and accordion_group %} 
+        <script type="application/ld+json">
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [{{ schemaItems | raw }}] 
+          }
+        </script>
+      {% endif %}
+    </div>  
+  {% endblock %}
+{% endembed %}

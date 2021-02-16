@@ -1,0 +1,66 @@
+<extension type="component" version="3.0" method="upgrade">
+    <name>COM_SMARTFORMS</name>
+    <author>Edgar Rojas</author>
+    <creationDate>2018-01-26</creationDate>
+    <description>The best drag and drop form builder</description>	
+    <version>1.4</version>
+    <license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<scriptfile>script.smartforms.php</scriptfile>
+    <install>
+        <sql>
+            <file charset="utf8" driver="mysql">sql/install.mysql.sql</file>
+        </sql>
+    </install>
+
+    <uninstall>
+        <sql>
+            <file charset="utf8" driver="mysql">sql/uninstall.mysql.sql</file>
+
+        </sql>
+    </uninstall>
+    <update>
+        <sql>
+            <file charset="utf8" driver="mysql">sql/update.mysql.sql</file>
+
+        </sql>
+    </update>
+
+    <files folder="site">
+        <folder>plugin</folder>
+		<file>smartforms.php</file>
+        <folder>views</folder>
+    </files>
+
+
+    <updateservers>
+        <server type="extension" name="SmartForms" priority="1">http://smartforms.rednao.com/joomla/update.xml</server>
+    </updateservers>
+	 
+    <administration>
+
+        <files folder="admin">
+            <folder>plugin</folder>           
+			<folder>language</folder>  
+			<folder>sql</folder>
+			<file>script.smartforms.php</file>
+            <file>smartforms.php</file>
+            <folder>models</folder>
+        </files>
+		<menu>COM_SMARTFORMS</menu>
+        <submenu>
+            <menu act="manageforms" alt="Smart Forms/Manage Forms">COM_SMART_FORMS_MENU_MANAGE_FORM</menu>
+            <menu act="entries" alt="Smart Forms/View Entries">COM_SMART_FORMS_VIEW_ENTRIES</menu>
+            <menu act="support" alt="Smart Forms/Support">COM_SMART_FORMS_MENU_SUPPORT</menu>
+            <menu act="tutorials" alt="Smart Forms/Tutorials">COM_SMART_FORMS_MENU_TUTORIAL</menu>
+        </submenu>
+		<languages folder="admin">
+            <language tag="en-GB">language/en-GB/en-GB.com_smartforms.ini</language>
+            <language tag="en-GB">language/en-GB/en-GB.com_smartforms.sys.ini</language>
+        </languages>
+
+       
+
+    </administration>
+
+
+</extension>

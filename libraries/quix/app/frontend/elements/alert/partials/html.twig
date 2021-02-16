@@ -1,0 +1,44 @@
+{% set id = field("id") %}
+{% set class = field('class') %}
+{% set content = field('content') %}
+{% set heading = field('heading') %}
+{% set closeOption = field('close_option')|default(false) %}
+
+{% set classes = classNames('qx-element qx-element-alert-v2 qx-alert', 
+	visibilityClass(node.visibility), field('type'), {
+	'qx-alert-dismissible' : (field('close_option') == true)
+},class) %}
+
+{% set animation = field("animation") %}
+{% set animationRepeat = field("animation_repeat") %}
+{% set animationDelay = field('animation_delay').value %}
+{% set background = field('background') %}
+	
+{% embed "animation.twig" with {
+    "id" : id,
+    "classes" : classes,
+    "animation" : animation,
+    "animationRepeat" : animationRepeat,
+    "animationDelay" : animationDelay,
+    "background" : background
+} %}
+    {% block element %}
+
+		{% if closeOption %}
+		<button type="button" class="close" data-dismiss="alert" data-target="#{{id}}" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+		{% endif %}
+
+		{% if heading %}
+			<h4 class="qx-alert-heading">{{ heading }}</h4>
+		{% endif %}  
+		
+		{% if content %}
+			<div class="qx-alert__content">{{ content|raw }}</div>
+		{% endif %}
+
+	{% endblock %}
+{% endembed %}
+
+

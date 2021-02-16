@@ -1,0 +1,70 @@
+{% include 'global.twig' %}
+
+var id = "#{{ field("id") }}",
+    img = {{ field("image") | json_encode() }},
+    img_alignment = {{ field("image_alignment").value | json_encode() }},
+    wrapperSelector = id + " .qx-element-person__wrapper",
+    imageSelector = id + " .qx-element-person__image",
+    flexSelector = id + " .qx-element-person__image, " + id +" .qx-element-person__profile",
+    nameSelector = id + " .qx-element-person__name",
+    positionSelector = id + " .qx-element-person__position",
+    descriptionSelector = id + " .qx-element-person__description",
+    profileSelector = id + " .qx-element-person__profile";
+
+// image Style
+if( img_alignment == 'left'){
+  style.responsiveCss(imageSelector, {{ field("image_spacing") | json_encode() }}, 'margin-right', {{ field("image_spacing").unit | json_encode() }});
+  style.css( imageSelector , 'margin-bottom', '0px' );
+  style.css( flexSelector , 'flex', '1 0 0' );
+} else if( img_alignment == 'right'){
+  style.responsiveCss(imageSelector, {{ field("image_spacing") | json_encode() }}, 'margin-left', {{ field("image_spacing").unit | json_encode() }});
+  style.css( imageSelector , 'margin-bottom', '0px' );
+  style.css( flexSelector , 'flex', '1 0 0' );
+} else{
+  style.responsiveCss(imageSelector, {{ field("image_spacing") | json_encode() }}, 'margin-bottom', {{ field("image_spacing").unit | json_encode() }});
+}
+// svg
+if( img.media ) {
+  if( img.media.type == "svg" ) {
+    var size = {{ prepareSvgSizeValue(field("image").media.properties.size)|json_encode() }};
+    
+    style.css( imageSelector + " path", "fill", img.media.properties.color )
+    style.css( imageSelector + " svg", 'width', size.value +  size.unit)
+    style.css( imageSelector + " svg", 'height', size.value +  size.unit)
+
+    style.css( imageSelector + " i", 'color', img.media.properties.color)
+    style.css( imageSelector + " i", 'font-size', size.value +  size.unit)
+  }
+}
+// Width > img
+style.width( imageSelector + ' *', {{ field('img_width') | json_encode() }}); 
+style.background( imageSelector, {{ field('img_background') | json_encode() }});
+style.border( imageSelector, {{ field('img_border') | json_encode() }});
+style.padding( imageSelector, {{ field('img_padding') | json_encode() }});
+style.css( imageSelector, "overflow", "hidden");
+
+// Name Style
+// -----------------
+style.responsiveCss( nameSelector + ' *', {{ field("name_spacing") | json_encode() }}, 'margin-bottom', {{ field("name_spacing").unit | json_encode() }});
+style.css( nameSelector + ' *', 'color', {{ field('name_color') | json_encode() }});
+style.typography( nameSelector + ' *', {{ field('name_font') | json_encode() }});
+
+// position Style
+// ------------------
+style.responsiveCss( positionSelector , {{ field("position_spacing") | json_encode() }}, 'margin-bottom', {{ field("position_spacing").unit | json_encode() }});
+style.css( positionSelector, 'color', {{ field('position_color') | json_encode() }});
+style.typography( positionSelector, {{ field('position_font') | json_encode() }});
+
+// Description Style
+// -------------------
+style.css( descriptionSelector, 'color', {{ field('description_color') | json_encode() }});
+style.typography( descriptionSelector, {{ field('description_font') | json_encode() }});
+
+// Content 
+// --------------------
+style.alignment( wrapperSelector, {{ field('content_alignment') | json_encode() }});
+style.padding( profileSelector, {{ field("content_padding") | json_encode() }})
+
+{% if renderer %}
+    style.load(id);
+{% endif %}

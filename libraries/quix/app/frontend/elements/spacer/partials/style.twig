@@ -1,0 +1,10 @@
+{% include 'global.twig' %}
+
+var id = "#{{ field("id") }}",
+    seperator = id + " .qx-divider-separator";
+
+style.height(id, {{ field('space') | json_encode() }});
+
+{% if renderer %}
+    style.load(id);
+{% endif %}

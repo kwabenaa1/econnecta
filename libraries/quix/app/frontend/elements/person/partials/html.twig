@@ -1,0 +1,79 @@
+{% set id = field("id") %}
+{% set class = field('class') %}
+{# person image #}
+{% set src = field('image') %}
+{% set alt_text = field('alt_text') %}
+{% set link = field('link') %}
+{# person details #}
+{% set name = field('pname') %}
+{% set tag = field('html_tag') %}
+{% set position = field('position') %}
+{% set enableDes = field('enable_description')|default(false) %}
+{% set description = field('description') %}
+{# Image postion #}
+{% set wrapperClassesForPerson = classNames('qx-element-person__wrapper',
+  field('content_v_align').value ? field('content_v_align').value : '',
+{
+  'qx-d-md-flex qx-flex-md-row' : (field('image_alignment').value == 'left'),
+  'qx-d-md-flex qx-flex-md-row-reverse' : (field('image_alignment').value == 'right'),
+}) %}
+
+{% set classes = classNames('qx-element qx-element-person-v2', visibilityClass(node.visibility), class) %}
+{% set animation = field("animation") %}
+{% set animationRepeat = field("animation_repeat") %}
+{% set animationDelay = field('animation_delay').value %}
+{% set background = field('background') %}
+  
+{% embed "animation.twig" with {
+    "id" : id,
+    "classes" : classes,
+    "animation" : animation,
+    "animationRepeat" : animationRepeat,
+    "animationDelay" : animationDelay,
+    "background" : background
+} %}
+    {% block element %}
+      <div class="{{ wrapperClassesForPerson }}">
+        {# person image #}
+        {% if src.media or src.url %}
+        <figure class="qx-element-person__image qx-d-inline-block">
+          {% if src.media %}
+            {% if src.media.type == "svg" %}
+              {{ loadSvg(src.media.svg) | raw }}
+            {% else %}
+              {{ image( src.media.image, alt_text) | link(link) }}
+            {% endif %}  
+          {% elseif src.url %}
+              {{ image(src.url, alt_text) | link(link) }}
+          {% endif %}
+        </figure>
+        {% endif %}
+
+        <div class="qx-element-person__profile">
+
+          {# person name #}
+          {% if name %}
+            <div class="qx-element-person__name">
+              {{ name | wrap(tag) }}
+            </div>
+          {% endif %}
+
+          {# person position #}
+          {% if position %}
+            <div class="qx-element-person__position">
+              {{field('position')}}
+            </div>
+          {% endif %}
+
+          {# person content #}
+          {% if enableDes == true %}
+            <div class="qx-element-person__description">
+              {{field('description')|raw}}
+            </div>
+          {% endif %}
+
+        </div>
+
+      </div>
+  {% endblock %}
+{% endembed %}

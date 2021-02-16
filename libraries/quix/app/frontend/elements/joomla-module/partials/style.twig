@@ -1,0 +1,7 @@
+{% include 'global.twig' %}
+
+var id = "#{{ field("id") }}";
+
+{% if renderer %}
+    style.load(id);
+{% endif %}

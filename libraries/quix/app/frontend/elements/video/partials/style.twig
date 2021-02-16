@@ -1,0 +1,16 @@
+{% include 'global.twig' %}
+
+var id = "#{{ field("id") }}";
+
+
+
+// Height
+style.height(id + " .plyr," + id + " iframe," + id + " .plyr__video-wrapper", {{ field("height") | json_encode() }})
+// Width 
+style.width(id + " .plyr", {{ field("width") | json_encode() }})
+
+style.css(id + " .plyr", "margin", "0 auto")
+
+{% if renderer %}
+  style.load(id);
+{% endif %}

@@ -1,0 +1,48 @@
+{% set id = field("id") %}
+{% set class = field('class') %}
+{% set classes = classNames('qx-column', visibilityClassNode(node.visibility), grid, class ) %}
+{% set bg_overlay = field('background_overlay') %}
+
+{% set animation = field("animation") %}
+{% set animationRepeat = field("animation_repeat") %}
+{% set animationDelay = field('animation_delay').value %}
+{% set background = field('background') %}
+
+{% if animation != 'none' %}
+
+    {% if animation is not empty %}
+        {% set animation = "cls:" ~ animation ~ ";" %}
+    {% endif %}
+
+    {# repeat #}
+    {% if animationRepeat %}
+        {% set animation = animation ~ "repeat:ture;" %}
+    {% endif %}
+
+    {# delay #}
+    {% if animationDelay %}
+        {% set animation = animation ~ "delay:" ~ animationDelay %}
+    {% endif %}
+{% endif %}
+
+<{{ tagname|default('div') }} 
+  {% if id is defined and id %} id="{{ id }}" {% endif %} 
+  {% if classes is defined and classes %} class="{{ classes }}" {% endif %} 
+  {% if animation is not empty and animation != "none" %} qx-scrollspy="{{ animation }}" {% endif %}
+>
+
+  {% block element %}
+      {% if renderer %}
+        <div class="qx-col-wrap">
+          {% if (bg_overlay and ( getOpacity(bg_overlay, 'normal') or getOpacity(bg_overlay, 'hover') ) ) %}
+            {% set overlayClass = "qx-background-overlay " ~ id ~ "-background-overlay" %}
+            <div class="{{ overlayClass }}"></div>
+          {% endif %}
+          <div class="qx-elements-wrap">
+            {{ renderer.render( node['children'], null, 'frontend' ) | raw  }}
+          </div>
+        </div>
+      {% endif %}
+  {% endblock %}
+
+</{{ tagname|default('div') }}>

@@ -1,0 +1,21 @@
+{% include 'global.twig' %}
+
+var id = "#{{ field("id") }}"
+    headingSelector = id + " .qx-alert-heading",
+    contentSelector = id + " .qx-alert__content",
+
+// Alignment
+style.alignment(id, {{ field('alignment') | json_encode() }});
+style.alignment(id, {{ field('nalignment') | json_encode() }});
+
+// typography
+style.typography(headingSelector, {{ field('heading_font') | json_encode() }});
+style.css( headingSelector, 'color', {{ field('heading_color') | json_encode() }});
+
+// Content
+style.typography(contentSelector, {{ field('content_font') | json_encode() }});
+style.css( contentSelector, 'color', {{ field('content_color') | json_encode() }});
+
+{% if renderer %}
+    style.load(id);
+{% endif %}

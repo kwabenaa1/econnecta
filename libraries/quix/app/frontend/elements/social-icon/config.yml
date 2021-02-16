@@ -1,0 +1,142 @@
+name: Social Icon
+slug: social-icon
+groups: general
+helpId: 5d1ff0772c7d3a5cd38ec1d6
+form:
+  general:
+    - name: social_list
+      type: group-repeater
+      schema:
+        
+        - name: title
+          type: text
+          value: Icon
+
+        - name: link
+          type: link
+          value:
+            url: '#'
+
+        - name: icon
+          type: media
+          filters: icon
+          showstyle: true
+          
+      value:
+        - title : Facebook
+          icon: 'libraries/quix/assets/images/placeholder.png'
+
+        - title : Twitter
+          icon: 'libraries/quix/assets/images/placeholder.png'
+
+        - title : LinkedIn
+          icon: 'libraries/quix/assets/images/placeholder.png'
+        
+    - name : basic_setting
+      label: Basic
+      type: fields-group
+      status: close
+      schema:
+
+        - name: layout
+          label: Layout
+          type: select
+          value: hr
+          options:
+            vr: List
+            hr: Inline
+
+        - name : alignment
+          type : choose
+          label: Position
+          responsive : false
+          options:
+            left :
+              label: Left
+              icon : qxuicon-align-left
+            center :
+              label : Center
+              icon : qxuicon-align-center
+            right : 
+              label : Right
+              icon : qxuicon-align-right
+  
+  styles:     
+
+    - name: spacing_setting
+      label: Spacing
+      type: fields-group
+      status: close
+      schema:
+        - name  : item_spacing
+          label : Item Spacing
+          type: slider
+          units: px
+          defaultUnit: px
+          max : 100
+          value: 
+            desktop : 5
+            tablet : 5
+            phone : 5
+
+        - name: item_padding
+          label: Item Padding
+          type: dimensions
+          units: px
+          defaultUnit: px
+    
+    - name: border_setting
+      label: Border
+      type: fields-group
+      status: close
+      schema:
+        - name: social_border_width
+          type: dimensions
+          label: Width
+          units: px
+          defaultUnt: px
+
+        - name: social_border_type
+          type: select
+          label: Border Type      
+          value: none
+          options:
+            none: None
+            solid: Solid
+            double: Double
+            dotted: Dotted
+            dashed: Dashed
+        
+        - name: social_border_color
+          type: color
+          label: Border Color
+        
+        - name: social_border_radius
+          type: dimensions
+          label: Border Radius
+          units: px
+          defaultUnit: px
+        
+
+    - name: color_setting
+      label: Color
+      type: fields-group
+      status: close
+      schema:
+        - name: icon_common
+          label: Icon Color
+          type: color
+
+        - name  : icon_hover
+          label : Icon Hover Color
+          type: color     
+          
+        - name: icon_bg
+          label: Background
+          type: color
+
+        - name: icon_hover_bg
+          label: Background Hover Color
+          type: color          
+
+        

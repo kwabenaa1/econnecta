@@ -1,0 +1,87 @@
+{% include 'global.twig' %}
+
+var id = "#{{ field("id") }}",
+    icon = {{ field("icon") | json_encode() }},
+    layoutItem = id + ' ul li',
+    inlineLayout = id + ' ul.qx-inline ',
+    inlineSpace = id + ' ul.qx-inline li';
+    listLayout = id + ' ul.qx-list ',
+    listSpace = id + ' ul.qx-list li',
+    singleIcon = id + ' ul li i';
+
+// common
+style.desktop( ".qx-element-social-icon svg", "height: 30px;")
+style.desktop( ".qx-element-social-icon svg", "width: 30px;")
+style.desktop( ".qx-element-social-icon i", "font-size: 25px;")
+
+//icon common color
+style.css( singleIcon, 'color', {{ field('icon_common') | json_encode() }});
+
+{% set fieldsGroup = field('social_list') %}
+{% if fieldsGroup %}
+    {% for index, fields in fieldsGroup %}
+        {% set data = fieldsGroup(fieldsGroup, index) %}
+        {% set src = data.icon.value %}
+
+        {% if src.media.type == "svg" %}
+            style.desktop( id + " ul li.item-{{index}} svg path", "fill: {{ src.media.properties.color }}" )
+            style.desktop( id + " ul li.item-{{index}} svg", "height: {{ src.media.properties.size.value }}{{ src.media.properties.size.unit }};")
+            style.desktop( id + " ul li.item-{{index}} svg", "width: {{ src.media.properties.size.value }}{{ src.media.properties.size.unit }};")
+
+            style.css( id + " ul li.item-{{index}} i", 'color', "{{ src.media.properties.color }}")
+            style.css( id + " ul li.item-{{index}} i", 'font-size', "{{ src.media.properties.size.value }}{{ src.media.properties.size.unit }}")
+        {% endif %}
+
+    {% endfor %}
+{% endif %}
+
+// -----------------------------
+// Alignment 
+// -----------------------------
+var itemAlignment = {{ field("alignment") | json_encode() }}
+
+if (itemAlignment.value == 'left') style.css(listSpace, 'justify-content', 'flex-start');
+if (itemAlignment.value == 'center') style.css(listSpace, 'justify-content', 'center');
+if (itemAlignment.value == 'right') style.css(listSpace, 'justify-content', 'flex-end');
+
+if (itemAlignment.value == 'left') style.css(inlineLayout, 'justify-content', 'flex-start');
+if (itemAlignment.value == 'center') style.css(inlineLayout, 'justify-content', 'center');
+if (itemAlignment.value == 'right') style.css(inlineLayout, 'justify-content', 'flex-end');
+
+// Layout Control
+style.css( inlineLayout + ',' + layoutItem, 'display', 'flex' );
+style.css( inlineLayout + ',' + layoutItem, 'align-self', 'center' );
+
+// Color
+style.css( singleIcon, 'background-color', {{ field('icon_bg') | json_encode() }});
+
+style.css( singleIcon + ':hover', 'color', {{ field('icon_hover') | json_encode() }});
+style.css( singleIcon + ':hover', 'fill', {{ field('icon_hover') | json_encode() }});
+style.css( singleIcon + ':hover', 'background-color', {{ field('icon_hover_bg') | json_encode() }});
+
+
+// Spacing
+style.css( inlineLayout, 'margin-left', '8px' );
+style.css( inlineLayout, 'margin-right', '8px' );
+style.css( inlineLayout + ',' + listLayout, 'margin-left', '0' );
+style.css( inlineLayout + ',' + listLayout, 'margin-bottom', '0' );
+
+style.responsiveCss(listSpace, {{ field("item_spacing") | json_encode() }}, 'margin-bottom', {{ field("item_spacing").unit | json_encode() }});
+style.css( listSpace + ':last-child', 'margin-bottom', '0px' );
+
+style.responsiveCss(inlineSpace, {{ field("item_spacing") | json_encode() }}, 'margin-right', {{ field("item_spacing").unit | json_encode() }});
+style.css( inlineSpace + ':last-child', 'margin-right', '0px' );
+
+style.padding( singleIcon, {{ field('item_padding') | json_encode() }});
+
+// Border
+
+style.borderWidth( singleIcon, {{ field('social_border_width') | json_encode() }} );
+style.css( singleIcon, 'border-style', {{ field('social_border_type') | json_encode() }} );
+style.css( singleIcon, 'border-color', {{ field('social_border_color') | json_encode() }} );
+style.borderRadius( singleIcon, {{ field('social_border_radius') | json_encode() }} );
+
+
+{% if renderer %}
+    style.load(id);
+{% endif %}

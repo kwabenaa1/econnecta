@@ -1,0 +1,56 @@
+var style = Object.assign({}, Assets),
+          id = "#{{ field("id") }}",
+          wrapper = "#{{ field("id") ~ " " ~ greaterThanSign() ~ " .qx-col-wrap" }}",
+          css = "",
+          backgroundOverlay = ".{{ field('id') }}-background-overlay",
+          elementBuilderSelector = id + " .qx-fb-elements .qx-fb-element+.qx-fb-element",
+          elementSelector = id + " .qx-element-wrap+.qx-element-wrap",
+          width = {{ field("col_width") | json_encode() }};
+// margin
+style.margin(wrapper, {{ field("margin") | json_encode() }})
+
+// padding 
+style.padding(wrapper, {{ field("padding") | json_encode() }})
+
+// Z-Index
+style.css(id, 'z-index', {{ field("zindex") | json_encode() }})
+
+// background 
+style.background (wrapper, {{ field("background") | json_encode() }})
+
+// border + box shadow 
+style.border (wrapper, {{ field("border") | json_encode() }})
+
+// custom css 
+style.raw ("{{ field("custom_css").code }}")
+
+
+{% if renderer %}
+
+  if(width.desktop) {
+    style.desktop(id, "flex: " + width.desktop + "%; max-width: " + width.desktop + "%;");
+    style.tablet(id,  "flex: " + width.tablet + "%; max-width: " + width.tablet + "%;");
+    style.phone(id,  "flex: " + width.phone + "%; max-width: " + width.phone + "%;");
+  }
+
+  if(width.value) {
+    style.desktop(id, "flex: " + width.value.desktop + "%; max-width: " + width.value.desktop + "%;");
+    style.tablet(id,  "flex: " + width.value.tablet + "%; max-width: " + width.value.tablet + "%;");
+    style.phone(id,  "flex: " + width.value.phone + "%; max-width: " + width.value.phone + "%;");
+  }
+
+{% endif %}
+
+// background overlay
+style.background (backgroundOverlay, {{ field("background_overlay") | json_encode() }}, id)
+
+style.responsiveCss(elementBuilderSelector, {{ field("element_spacing") | json_encode() }}, 'margin-top', 'px');
+style.responsiveCss(elementSelector, {{ field("element_spacing") | json_encode() }}, 'margin-top', 'px');
+
+
+// loading children ( ELEMENTS ) style...
+{% if renderer %}
+  style.load(id)
+  
+  {{ renderer.render( node['children'], null, 'frontend' ) | raw  }}
+{% endif %}

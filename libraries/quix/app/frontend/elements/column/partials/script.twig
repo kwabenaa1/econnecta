@@ -1,0 +1,4 @@
+{# loading children ( ELEMENT ) script... #}
+{% if renderer %}
+  {{ renderer.render( node['children'], null, 'frontend' ) | raw  }}
+{% endif %}

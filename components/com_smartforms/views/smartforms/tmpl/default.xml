@@ -1,0 +1,10 @@
+<metadata>
+    <layout title="Forms">
+        <message></message>
+    </layout>
+    <fields name="request">
+        <fieldset name="request" addfieldpath="/administrator/components/com_smartforms/models/forms"	>
+            <field name="id" type="modal_smartformscontacts" label="Select a Form" required="true"/>
+        </fieldset>
+    </fields>
+</metadata>

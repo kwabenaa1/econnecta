@@ -1,0 +1,61 @@
+{% set id = field("id") %}
+{% set class = field('class') %}
+
+{% set name = field('tname') %}
+{% set content = field('content') %}
+{% set position = field('position') %}
+{% set src = field('image') %}
+{% set alt_text = field('alt_text') %}
+{% set image_spacing = field('image_spacing') %}
+{% set img_alignment = field('image_alignment').value %}
+{% set content_alignment = field('alignment').value %}
+
+{% set wrapperClasses = classNames('qx-element-testimonial__wrapper', {
+	'qx-d-inline-flex  qx-flex-column-reverse' : (img_alignment == 'bottom'),
+	'qx-d-inline-flex  qx-align-items-center qx-flex-row-reverse' : (img_alignment == 'right'),
+	'qx-d-inline-flex  qx-align-items-center' : (img_alignment == 'left')
+}) %}
+
+{% set classes = classNames('qx-element qx-element-testimonial-v2', visibilityClass(node.visibility), class) %}
+{% set animation = field("animation") %}
+{% set animationRepeat = field("animation_repeat") %}
+{% set animationDelay = field('animation_delay').value %}
+{% set background = field('background') %}
+    
+{% embed "animation.twig" with {
+    "id" : id,
+    "classes" : classes,
+    "animation" : animation,
+    "animationRepeat" : animationRepeat,
+    "animationDelay" : animationDelay,
+    "background" : background
+} %}
+    {% block element %}
+        <div class="{{ wrapperClasses }}">
+            {% if content %}
+                <p class="qx-testimonial__quote">{{ content|raw }}</p>
+            {% endif %}
+
+            <div class="qx-element-testimonial__media qx-d-inline-block">
+                {% if src.media %}
+                    {% if src.media.type == "svg" %}
+                        {{ loadSvg(src.media.svg) | raw }}
+                    {% else %}
+                        {{ image( src.media.image, alt_text)  }}
+                    {% endif %}  
+                {% elseif src.url %}
+                    {{ image(src.url, alt_text) }}
+                {% endif %} 
+            </div>
+
+            <div class="qx-testimonial__author">
+                {% if name %}
+                    <div class="qx-testimonial__name">{{ name }}</div>
+                {% endif %}
+                {% if position %}
+                <div class="qx-testimonial__position">{{ position }}</div>
+                {% endif %}
+            </div>
+        </div>
+    {% endblock %}
+{% endembed %}

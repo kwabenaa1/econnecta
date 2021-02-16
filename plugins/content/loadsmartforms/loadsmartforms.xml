@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.0" type="plugin" group="content" method="upgrade">
+    <name>Content - Load Smart Forms</name>
+    <author>Edgar Rojas</author>
+    <creationDate>2018-01-26</creationDate>
+    <authorUrl>http://smartforms.rednao.com</authorUrl>
+    <license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
+    <version>1.0</version>
+    <description>The best drag and drop form builder</description>
+    <files>
+        <filename plugin="loadsmartforms">loadsmartforms.php</filename>
+    </files>
+</extension>

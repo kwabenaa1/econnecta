@@ -1,0 +1,56 @@
+{% set id = field('id') %}
+{% set backgroundInfo = field("background") %}
+
+{% if backgroundInfo.state.normal.type == "video" %}
+setTimeout(function() {
+  var background = {{ field("background") | json_encode() }}
+  if( background.hasOwnProperty('state') ) {
+    if( background.state.normal.type == "video" ) {
+      if(!background.state.normal.properties.url.media){
+        var source = background.state.normal.properties.url.url;
+      }else{
+        var source = FILE_MANAGER_ROOT_URL + background.state.normal.properties.url.media.video
+      }
+      
+      if( ! jQuery("script#backgroundjs").length ) {
+        var inlineScript = document.createElement("script");
+
+        inlineScript.src = QUIX_ROOT_URL + "libraries/quix/assets/js/background.js";
+        inlineScript.id = "backgroundjs"
+        document.head.appendChild(inlineScript);
+
+        var link = document.createElement('link');
+        link.href = QUIX_ROOT_URL + "libraries/quix/assets/css/background.css";
+        link.rel = "stylesheet";
+
+        document.head.appendChild(link);
+
+        jQuery.getScript(QUIX_ROOT_URL + "libraries/quix/assets/js/background.js", function(){
+          jQuery("#{{ id }} .qx-background-video-container").background({
+            source: {
+              {# poster: background.state.normal.properties.url.poster.image, #}
+              poster: "",
+              mp4: source
+            }            
+          });
+        });
+      } else {
+        jQuery.getScript(QUIX_ROOT_URL + "libraries/quix/assets/js/background.js", function(){
+          jQuery("#{{ id }} .qx-background-video-container").background({
+            source: {
+              {# poster: background.state.normal.properties.url.poster.image, #}
+              poster: "",
+              mp4: source
+            }
+          });
+        });
+      }
+    }
+  }
+}, 3000);
+{% endif %}
+
+{# loading children ( ROW ) script... #}
+{% if renderer %}
+  {{ renderer.render( node['children'], null, 'frontend' ) | raw  }}
+{% endif %}

@@ -1,0 +1,88 @@
+{% include 'global.twig' %}
+
+var style = Object.assign({}, Assets),
+          id = "#{{ field('id') }}",
+          backgroundOverlay = ".{{ field('id') }}-background-overlay",
+          topDivider = id + " .qx-shape-top",
+          topDividerSvg = topDivider + ' svg',
+          bottomDivider = id + " .qx-shape-bottom",
+          bottomDividerSvg = bottomDivider + ' svg',
+          containerType = {{ field('container_type') | json_encode() }},
+          heightType = {{ field('height') | json_encode() }},
+          containerClass = ( containerType == 'boxed' ) ? ' .qx-container' : ' .qx-container-fluid';
+// Custom height
+if( heightType == 'custom' ){
+  style.minHeight(id + containerClass, {{ field('custom_height') | json_encode() }})
+}
+// custom width
+if( containerType == 'custom' ){
+  style.responsiveCss(id + containerClass, {{ field('container_width') | json_encode() }}, 'width', "{{ field('container_width').unit }}")
+}
+
+// border + box shadow 
+style.border (id, {{ field("border") | json_encode() }})
+
+// Top Divider 
+var topDividerStyle = {{ field('top_divider_style') | json_encode() }}
+
+if( topDividerStyle != 'none'){
+
+  // shape color
+  style.css( topDivider + " path.qx-shape-fill", 'fill', "{{ field("top_divider_color") }}" )
+  
+  // Width
+  style.width(topDividerSvg, {{ field('top_divider_width') | json_encode() }}, '%')
+  
+  // Height
+  style.height(topDividerSvg, {{ field('top_divider_height') | json_encode() }})
+
+  // Flip control
+  if( {{ field('top_divider_flip') | json_encode() }} ){
+    style.css( topDivider, 'transform', 'scaleX(-1)')
+  }
+
+  // Bring To front
+  var shapeFront = {{ field('top_divider_front') | json_encode() }};
+  if(shapeFront){
+    style.css(topDivider, "z-index", 2);
+  }
+
+}
+
+// Bottom Divider 
+var bottomDividerStyle = {{ field('bottom_divider_style') | json_encode() }}
+
+if( bottomDividerStyle != 'none'){
+
+  // shape color
+  style.css( bottomDivider + " path.qx-shape-fill", 'fill', "{{ field("bottom_divider_color") }}" )
+  
+  // Width
+  style.width(bottomDividerSvg, {{ field('bottom_divider_width') | json_encode() }}, '%')
+  
+  // Height
+  style.height(bottomDividerSvg, {{ field('bottom_divider_height') | json_encode() }})
+
+  // Flip control
+  if( {{ field('bottom_divider_flip') | json_encode() }} ){
+    style.css( bottomDivider, 'transform', 'scaleX(-1) rotate(180deg)')
+  }
+
+  // Bring To front
+  var shapeBack = {{ field('bottom_divider_front') | json_encode() }};
+  if(shapeBack){
+    style.css(bottomDivider, "z-index", 2);
+  }
+
+}
+
+// background overlay
+style.background (backgroundOverlay, {{ field("background_overlay") | json_encode() }}, id)
+
+
+// loading children ( ROW ) style...
+{% if renderer %}
+  style.load(id)
+  
+  {{ renderer.render( node['children'], null, 'frontend' ) | raw  }}
+{% endif %}  

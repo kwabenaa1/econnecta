@@ -1,0 +1,41 @@
+var style = Object.assign({}, Assets),
+          id = "#{{ field("id") }}",
+          wrapper = "#{{ field("id") ~ " " ~ greaterThanSign() ~ " .qx-row" }}",
+          css = "",
+          backgroundOverlay = ".{{ field('id') }}-background-overlay";
+
+// margin
+style.margin(id, {{ field("margin") | json_encode() }})
+
+// padding 
+style.padding(id, {{ field("padding") | json_encode() }})
+
+// Z-Index
+style.css(id, 'z-index', {{ field("zindex") | json_encode() }})
+
+// background 
+style.background (id, {{ field("background") | json_encode() }})
+
+// background overlay
+style.background (backgroundOverlay, {{ field("background_overlay") | json_encode() }}, id)
+
+// border + box shadow 
+style.border (id, {{ field("border") | json_encode() }})
+
+// Custom height
+var heightType = {{ field('height') | json_encode() }}
+
+if( heightType == 'custom' ){
+  style.minHeight(wrapper, {{ field('custom_height') | json_encode() }})
+}
+
+// custom css 
+var rawCss = "{{ field("custom_css").code | default("") | removeLines }}";
+style.raw (rawCss)
+
+// loading children ( COLUMN ) style...
+{% if renderer %}
+  style.load(id);
+  
+  {{ renderer.render( node['children'], null, 'frontend' ) | raw  }}
+{% endif %}

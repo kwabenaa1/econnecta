@@ -1,0 +1,33 @@
+<?php
+/**
+ * Smart Forms jor Joomla
+ * @license Released under the terms of the GNU LESSER GENERAL PUBLIC LICENSE Version 3
+ **/
+
+defined( '_JEXEC' ) or die( 'Direct Access to this location is not allowed.' );
+/**
+ * Smarty plugin
+ *
+ * @package    Smarty
+ * @subpackage PluginsModifierCompiler
+ */
+
+/**
+ * Smarty count_paragraphs modifier plugin
+ * Type:     modifier<br>
+ * Name:     count_paragraphs<br>
+ * Purpose:  count the number of paragraphs in a text
+ *
+ * @link    http://www.smarty.net/manual/en/language.modifier.count.paragraphs.php
+ *          count_paragraphs (Smarty online manual)
+ * @author  Uwe Tews
+ *
+ * @param array $params parameters
+ *
+ * @return string with compiled code
+ */
+function smarty_modifiercompiler_count_paragraphs($params)
+{
+    // count \r or \n characters
+    return '(preg_match_all(\'#[\r\n]+#\', ' . $params[0] . ', $tmp)+1)';
+}

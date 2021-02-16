@@ -1,0 +1,11 @@
+{% include 'global.twig' %}
+
+var id = "#{{ field("id") }}",
+	iframe = id + " #googleMaps";
+
+style.css( iframe, 'width', "100%" );
+style.css( iframe, "height", "{{ field('height').value }}{{ field('height').unit }}" );
+
+{% if renderer %}
+    style.load(id);
+{% endif %}

@@ -1,0 +1,76 @@
+{% set id = field('id') %}
+{% set class = field('class') %}
+{% set tag = field('html_tag') %}
+{% set link = field('link') %}
+{% set src = field('image') %}
+{% set alt_text = field('alt_text') %}
+{% set image_position = field('image_position')|default('top') %}
+{% set caption = field('caption') %}
+{% 
+  set wrapperClasses = classNames('qx-element-blurb__wrapper', 
+  field('content_v_align').value ? field('content_v_align').value : "", 
+  {
+    'qx-d-md-flex qx-flex-md-row' : (field('image_alignment').value == 'left'),
+    'qx-d-md-flex qx-flex-md-row-reverse' : (field('image_alignment').value == 'right'),
+  }, class) 
+%}
+{% set classes = classNames('qx-element qx-element-blurb-v2', visibilityClass(node.visibility), class) %}
+
+{% set animation = field("animation") %}
+{% set animationRepeat = field("animation_repeat") %}
+{% set animationDelay = field('animation_delay').value %}
+{% set background = field('background') %}
+  
+{% embed "animation.twig" with {
+    "id" : id,
+    "classes" : classes,
+    "animation" : animation,
+    "animationRepeat" : animationRepeat,
+    "animationDelay" : animationDelay,
+    "background" : background
+} %}
+    {% block element %}
+      <div class="{{ wrapperClasses }} ">
+
+        {% set imageHtml = "" %}
+        {% if src.media or src.url %}
+          {% set imageHtml = '<figure class="qx-element-blurb__media qx-d-inline-block">' %}
+
+          {% if src.media %}
+            {% if src.media.type == "svg" %}
+              {% set imageHtml = imageHtml ~ loadSvg(src.media.svg) | raw | link(link) %}
+            {% else %}
+              {% set imageHtml = imageHtml ~ image( src.media.image, alt_text) | link(link) %}
+            {% endif %}  
+          {% elseif src.url %}
+            {% set imageHtml = imageHtml ~ image(src.url, alt_text) | link(link) %}
+          {% endif %}
+          
+          {% if caption %}
+            {% set imageHtml = imageHtml ~ '<figcaption class="qx-figure-caption qx-d-inline-block">' ~ caption ~ '</figcaption>' %}
+          {% endif %}
+          
+          {% set imageHtml = imageHtml ~ '</figure>' %}
+        {% endif %}
+
+        {% if image_position.value == "top" or field('image_alignment').value != 'center' %}
+          {{ imageHtml|raw }}
+        {% endif %}
+
+        <div class="qx-element-blurb__content qx-w-100" data="{{field('image_alignment')|json_encode}}">
+          <div class="qx-element-blurb__title">
+            {{ field('title') | wrap(tag) | link(link) }}
+          </div>
+
+          {% if image_position.value == "bottom" and field('image_alignment').value == 'center' %}
+            {{ imageHtml|raw }}
+          {% endif %}
+
+          <div class="qx-element-blurb__body">
+            {{ field('content')|raw }}
+          </div>
+        </div>
+
+      </div>
+  {% endblock %}
+{% endembed %}

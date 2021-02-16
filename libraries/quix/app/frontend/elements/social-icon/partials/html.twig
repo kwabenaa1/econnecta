@@ -1,0 +1,62 @@
+{% set id = field("id") %}
+{% set class = field("class") %}
+{% set fieldsGroup = field('social_list') %}
+{% set classes = classNames('qx-element qx-element-social-icon', visibilityClass(node.visibility), class) %}
+{% set layout = field("layout") %}
+
+
+{# Start Animation #}
+{% set animation = field("animation") %}
+{% set animationRepeat = field("animation_repeat") %}
+{% set animationDelay = field('animation_delay').value %}
+{% set background = field('background') %}
+    
+{% embed "animation.twig" with {
+    "id" : id,
+    "classes" : classes,
+    "animation" : animation,
+    "animationRepeat" : animationRepeat,
+    "animationDelay" : animationDelay,
+    "background" : background
+} %}
+    {% block element %}
+        <div class="{{ id }}-wrapper">
+            {% if fieldsGroup %}
+            <ul class="qx-list-unstyled {{ layout == 'vr' ? 'qx-list' : 'qx-inline' }}">
+                {% for index, fields in fieldsGroup %}
+                <li class="item-{{index}} {{ layout == 'hr' ? 'inline-item' : '' }}">
+                    {% set data = fieldsGroup(fieldsGroup, index ) %}
+
+                    {% set src = data.icon.value %}
+                    {% set link = data.link.value %}
+                    {% set alt_text = '' %}
+
+                    <a 
+                        href="{{ link.url is defined and link.url ? link.url : '#' }}"
+                        target="{{ link.target is defined and link.target ? '_blank' : '_self' }}"
+                        rel="{{ link.nofollow is defined and link.nofollow ? 'nofollow' : 'follow' }}"
+                    >
+                        {% if src.media %}
+                            {% if src.media.type == "svg" %}
+                                {{ loadSvg(src.media.svg) | raw }}
+                            {% endif %}
+                        {% else %}
+                                {% if index == '0' %}
+                                    <i class="qxif-facebook"></i>
+                                {% elseif index == '1' %}
+                                    <i class="qxif-twitter-square"></i>
+                                {% elseif index == '2' %}
+                                    <i class="qxif-linkedin"></i>
+                                {% else %}
+                                    <i class="qxif-joomla"></i>
+                                {% endif %}
+                            </i>
+                        {% endif %}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    {% endblock %}
+{% endembed %}
